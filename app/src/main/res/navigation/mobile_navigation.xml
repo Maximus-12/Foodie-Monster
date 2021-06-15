@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_cal_record">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.maximus.foodiemonster.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_cal_record"
+        android:name="com.maximus.foodiemonster.ui.calrecord.CalRecordFragment"
+        android:label="CalorieRecord"
+        tools:layout="@layout/fragment_calorie_record" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.maximus.foodiemonster.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_time"
+        android:name="com.maximus.foodiemonster.ui.time.TimeFragment"
+        android:label="Time"
+        tools:layout="@layout/fragment_time" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.maximus.foodiemonster.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_showla"
+        android:name="com.maximus.foodiemonster.ui.showla.ShowLaFragment"
+        android:label="ShowLa"
+        tools:layout="@layout/fragment_showla" />
 </navigation>
