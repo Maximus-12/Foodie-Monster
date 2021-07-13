@@ -1,19 +1,18 @@
 package com.maximus.foodiemonster;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +32,18 @@ public class MainActivity extends AppCompatActivity {
 
         navView.setItemIconTintList(null);
 
+        FloatingActionButton menu_fab=findViewById(R.id.menu_fab);
+        ImageView menu=findViewById(R.id.menu);
+        AtomicReference<Boolean> tmp= new AtomicReference<>(true);
+        menu_fab.setOnClickListener(view -> {
+            if(tmp.get()){
+                menu.setVisibility(View.VISIBLE);
+                tmp.set(false);
+            }else{
+                menu.setVisibility(View.INVISIBLE);
+                tmp.set(true);
+            }
+        });
         /*BottomNavigationMenuView menuView = (BottomNavigationMenuView) navView.getChildAt(0);
         for (int i = 0; i < menuView.getChildCount(); i++) {
             final View iconView = menuView.getChildAt(i).findViewById(com.google.android.material.R.id.icon);
