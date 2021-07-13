@@ -3,16 +3,16 @@
 
     <item
         android:id="@+id/navigation_cal_record"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="CalorieRecord" />
+        android:icon="@drawable/icon_bottom_cal"
+        android:title="" />
 
     <item
         android:id="@+id/navigation_time"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="Time" />
+        android:icon="@drawable/icon_bottom_time"
+        android:title="" />
 
     <item
         android:id="@+id/navigation_showla"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="ShowLa" />
+        android:icon="@drawable/icon_bottom_showla"
+        android:title="" />
 </menu>
