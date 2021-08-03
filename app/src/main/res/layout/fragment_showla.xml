@@ -10,7 +10,7 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <FrameLayout
+    <!--FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -33,7 +33,7 @@
                 android:text="@string/dummy_button" />
 
         </LinearLayout>
-    </FrameLayout>
+    </FrameLayout-->
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
@@ -49,8 +49,8 @@
         android:textStyle="bold" /-->
     <ImageView
         android:id="@+id/showla_image"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/showla_tmpver"/>
+        android:src="@drawable/showla_tmpver" />
 
 </FrameLayout>
