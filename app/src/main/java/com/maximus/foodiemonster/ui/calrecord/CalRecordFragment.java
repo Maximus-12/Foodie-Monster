@@ -20,7 +20,7 @@ public class CalRecordFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_calorie_record, container, false);
+        View root = inflater.inflate(R.layout.fragment_cal_main, container, false);
         NavController navCtrl = findNavController(this);
 
         /*ImageButton btn1 = root.findViewById(R.id.imageButton1);

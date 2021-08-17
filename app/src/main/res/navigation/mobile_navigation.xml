@@ -5,11 +5,17 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_cal_record">
 
-    <fragment
+    <!--fragment
         android:id="@+id/navigation_cal_record"
         android:name="com.maximus.foodiemonster.ui.calrecord.CalRecordFragment"
         android:label="CalorieRecord"
-        tools:layout="@layout/fragment_calorie_record" />
+        tools:layout="@layout/fragment_calorie_record" /-->
+
+    <fragment
+        android:id="@+id/navigation_cal_record"
+        android:name="com.maximus.foodiemonster.ui.calrecord.ManualInputFragment"
+        android:label="CalorieRecord"
+        tools:layout="@layout/fragment_cal_manual" />
 
     <fragment
         android:id="@+id/navigation_time"

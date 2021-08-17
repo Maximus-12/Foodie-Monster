@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "343056272158",
+    "project_id": "eatsmonster",
+    "storage_bucket": "eatsmonster.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343056272158:android:72ef40383a0edcf718d70f",
+        "android_client_info": {
+          "package_name": "com.maximus.foodiemonster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343056272158-74dm5hnhpcmdt2qct9061sq10bj1ps0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maximus.foodiemonster",
+            "certificate_hash": "8576c83ee3b5559e37d01b522e737296ffc32713"
+          }
+        },
+        {
+          "client_id": "343056272158-enqh9h3jo810i1jb3kff4of2ui8oit7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHqblj2CAONEAQghPs5yIeqs7JBn7NvFE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343056272158-enqh9h3jo810i1jb3kff4of2ui8oit7o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
