@@ -40,9 +40,10 @@ public class ManualInputFragment extends Fragment {
     //private ArrayList<MealData> mealData_online= new ArrayList<MealData>();
 
     ArrayList<String> foodname= new ArrayList<String>();
+    ArrayList<String> foodcal=new ArrayList<String>();
     ArrayList<String> searchlist=new ArrayList<String>();
     MealData mealData=new MealData(TIME);
-    String text;
+    String text="";
     int total_cal=0;
     int tmpvar;
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,42 +60,7 @@ public class ManualInputFragment extends Fragment {
         @NonNull int amount = ManualInputFragmentArgs.fromBundle(getArguments()).getMealType();;
         Log.d(TAG, String.valueOf(amount));
         mealData.time+=amount;
-
-        ((MainActivity) requireActivity()).clear_mealdata();
-        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata();
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata();
-            Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
-            for (int i=0;i<mealData_online.size();i++){
-                if(mealData_online.get(i).time%10==amount){
-                    mealData=mealData_online.get(i);
-
-                    total_cal=mealData.totalcal;
-                    total.setText("總計："+total_cal+"大卡");
-                    for(int j=0;j<mealData.foodlist.size();j++){
-                        String tmp12=((MainActivity)getActivity()).read_cal(mealData.foodlist.get(j));
-                        int finalJ = j;
-                        new Handler(Looper.getMainLooper()).postDelayed(()-> {
-                            String cal=((MainActivity)getActivity()).read_cal(mealData.foodlist.get(finalJ));
-                            text+=mealData.foodlist.get(finalJ)+"："+cal+"大卡\n";
-                        }, 1000);
-
-                        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                tmpvar=j;
-                                String cal=((MainActivity)getActivity()).read_cal(mealData.foodlist.get(j));
-                                text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
-                                textview.setText(text);
-                            }
-                        }, 100);*/
-                    }
-                    textview.setText(text);
-                }
-            }
-        }, 1000);
-
-
+        text="";
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.foodname)));
             int i = 0;
@@ -107,6 +73,54 @@ public class ManualInputFragment extends Fragment {
             // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
             e.printStackTrace();
         }
+
+        try {
+            CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.foodcal)));
+            int i = 0;
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                foodcal.add(nextLine[0]);
+                i++;
+            }
+        } catch (IOException e) {
+            // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
+            e.printStackTrace();
+        }
+
+        ((MainActivity) requireActivity()).clear_mealdata();
+        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata();
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ((MainActivity) requireActivity()).clear_mealdata();
+            ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata();
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata();
+                Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
+                Log.d(TAG, "Numbers of mealdata :"+ mealData_online);
+                for (int i=0;i<mealData_online.size();i++){
+                    if(mealData_online.get(i).time%10==amount){
+                        mealData=mealData_online.get(i);
+
+                        total_cal=mealData.totalcal;
+                        total.setText("總計："+total_cal+"大卡");
+                        for(int j=0;j<mealData.foodlist.size();j++){
+                            //Double cal=Double.parseDouble(foodcal.get(j));
+                            for(int k=0;k<foodname.size();k++){
+                                if(foodname.get(k).equals(mealData.foodlist.get(j))){
+                                    String cal=foodcal.get(k);
+                                    text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
+                                    break;
+                                }
+                            }
+
+                        }
+                        textview.setText(text);
+                    }
+                }
+            }, 300);
+        }, 100);
+
+
+
 
         search_button.setOnClickListener(view -> {
 
@@ -122,7 +136,8 @@ public class ManualInputFragment extends Fragment {
 
                 dialog.dismiss();
                 //textview.setText(searchlist.get(which));
-                String tmp12=((MainActivity)getActivity()).read_cal(searchlist.get(which));
+
+                /*String tmp12=((MainActivity)getActivity()).read_cal(searchlist.get(which));
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     String cal=((MainActivity)getActivity()).read_cal(searchlist.get(which));
                     if(cal==null||cal=="查無此食物"){
@@ -137,7 +152,20 @@ public class ManualInputFragment extends Fragment {
                         mealData.totalcal=total_cal;
                         total.setText("總計："+total_cal+"大卡");
                     }
-                }, 1000);
+                }, 1000);*/
+                for(int j=0;j<foodname.size();j++){
+                    if(foodname.get(j).equals(searchlist.get(which))){
+                        String cal=foodcal.get(j);
+                        text= (String) textview.getText();
+                        text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
+                        mealData.foodlist.add(searchlist.get(which));
+                        textview.setText(text);
+                        total_cal+=Integer.parseInt(cal);
+                        mealData.totalcal=total_cal;
+                        total.setText("總計："+total_cal+"大卡");
+                    }
+                }
+
             });
             alert.show();
 
@@ -152,6 +180,7 @@ public class ManualInputFragment extends Fragment {
             textview.setText(" ");
             total_cal=0;
             total.setText("總計："+total_cal+"大卡");
+            mealData=new MealData(mealData.time);
         });
         Button save_button=root.findViewById(R.id.save_button);
         save_button.setOnClickListener(view -> {

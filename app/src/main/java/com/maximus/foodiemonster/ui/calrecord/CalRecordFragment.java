@@ -44,14 +44,26 @@ public class CalRecordFragment extends Fragment {
         ((MainActivity) requireActivity()).clear_mealdata();
         ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata();
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ArrayList<MealData> mealData=((MainActivity) requireActivity()).get_mealdata();
-            Log.d(TAG, "Numbers of mealdata :"+ mealData.size());
-            for (int i=0;i<mealData.size();i++){
-                if(mealData.get(i).time%10==1)cal_breakfast_text.setText(mealData.get(i).totalcal +"大卡");
-                else if(mealData.get(i).time%10==2)cal_lunch_text.setText(mealData.get(i).totalcal +"大卡");
-                else if(mealData.get(i).time%10==3)cal_dinner_text.setText(mealData.get(i).totalcal +"大卡");
-            }
-        }, 1000);
+            ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata();
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    ((MainActivity) requireActivity()).clear_mealdata();
+                    ArrayList<MealData> tmp3=((MainActivity) requireActivity()).get_mealdata();
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        ArrayList<MealData> tmp4=((MainActivity) requireActivity()).get_mealdata();
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            ArrayList<MealData> mealData=((MainActivity) requireActivity()).get_mealdata();
+                            Log.d(TAG, "Numbers of mealdata :"+ mealData.size());
+                            for (int i=0;i<mealData.size();i++){
+                                if(mealData.get(i).time%10==1)cal_breakfast_text.setText(mealData.get(i).totalcal +"大卡");
+                                else if(mealData.get(i).time%10==2)cal_lunch_text.setText(mealData.get(i).totalcal +"大卡");
+                                else if(mealData.get(i).time%10==3)cal_dinner_text.setText(mealData.get(i).totalcal +"大卡");
+                            }
+                        }, 500);
+                    }, 100);
+                }, 100);
+        }, 100);
+
+
 
 
         ImageView cal_breakfast=root.findViewById(R.id.cal_breakfast);
@@ -66,16 +78,8 @@ public class CalRecordFragment extends Fragment {
         });
         ImageView cal_dinner=root.findViewById(R.id.cal_dinner);
         cal_dinner.setOnClickListener(view -> {
-            /*CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(3);
-            navCtrl.navigate(action);*/
-            /*MealData tmp=((MainActivity) requireActivity()).get_mealdata();
-            try{
-                cal_breakfast_text.setText(String.valueOf(tmp.totalcal));
-                Log.d(TAG,  String.valueOf(tmp.totalcal));
-            }catch (Exception e){
-                e.printStackTrace();
-            }*/
-
+            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(3);
+            navCtrl.navigate(action);
         });
 
 
