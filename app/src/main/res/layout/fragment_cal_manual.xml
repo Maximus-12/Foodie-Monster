@@ -51,7 +51,7 @@
             android:id="@+id/test_manual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/manual"
+            android:src="@drawable/cal_manual"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -74,15 +74,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="搜尋食物"
-            app:layout_constraintEnd_toEndOf="@+id/clear"
+            app:layout_constraintEnd_toEndOf="@+id/save_button"
             app:layout_constraintStart_toEndOf="@+id/text_input"
             app:layout_constraintTop_toBottomOf="@+id/test_manual" />
 
         <Button
-            android:id="@+id/clear"
+            android:id="@+id/clear_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="清除列表"
+            android:text="清空列表"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/total"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="儲存資料"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/total"
             app:layout_constraintTop_toBottomOf="@+id/textView" />

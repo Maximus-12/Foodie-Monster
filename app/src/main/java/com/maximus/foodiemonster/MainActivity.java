@@ -22,6 +22,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +32,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mSignInClient;
     private FirebaseAuth mFirebaseAuth;
     private String foodCal;
+    private ArrayList<MealData> mealData= new ArrayList<MealData>();
     // [START declare_database_ref]
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     // [END declare_database_ref]
@@ -125,5 +131,42 @@ public class MainActivity extends AppCompatActivity {
         });
         return foodCal;
     }
-
+    public void clear_mealdata(){
+        mealData= new ArrayList<MealData>();
+    }
+    public ArrayList<MealData> get_mealdata(){//int time){
+        DocumentReference docRef = db.collection("users").document("test1");
+        CollectionReference dataRef=docRef.collection("data");
+        Query dataQuery=dataRef.orderBy("time");
+        dataQuery.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> docMap=document.getData();
+                                Log.d(TAG, "Map data: " + docMap);
+                                foodCal=String.valueOf(docMap.get("foodlist"));
+                                ArrayList<String> foodl=new ArrayList<String>((Collection<? extends String>) docMap.get("foodlist"));
+                                Log.d(TAG, "Length: " + foodl.size());
+                                Log.d(TAG, "ArrayList data: " + foodl);
+                                MealData tmp=new MealData();
+                                tmp.time=Integer.parseInt(String.valueOf(docMap.get("time")));
+                                tmp.foodlist=new ArrayList<String>((Collection<? extends String>) docMap.get("foodlist"));
+                                tmp.totalcal=Integer.parseInt(String.valueOf(docMap.get("totalcal")));
+                                mealData.add(tmp);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        return mealData;
+    }
+    public void save_mealdata(MealData data){
+        //System.out.println(data);
+        DocumentReference docRef = db.collection("users").document("test1");
+        docRef.collection("data").add(data);
+    }
 }

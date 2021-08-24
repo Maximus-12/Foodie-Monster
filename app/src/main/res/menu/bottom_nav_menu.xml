@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_cal_record"
+        android:id="@+id/navigation_cal_main"
         android:icon="@drawable/icon_bottom_cal"
         android:title="" />
 

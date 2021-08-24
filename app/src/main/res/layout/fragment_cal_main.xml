@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/fullscreenBackgroundColor"
     android:theme="@style/ThemeOverlay.FoodieMonster.FullscreenContainer"
     tools:context=".ui.calrecord.CalRecordFragment">
@@ -37,10 +38,94 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <ImageView
-        android:id="@+id/cal_image"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/cal_record_tmpver"/>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/cal_current_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="2021/08/24"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/cal_breakfast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/cal_breakfast"
+            app:layout_constraintEnd_toStartOf="@+id/cal_lunch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/cal_lunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/cal_lunch"
+            app:layout_constraintEnd_toStartOf="@+id/cal_dinner"
+            app:layout_constraintStart_toEndOf="@+id/cal_breakfast"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/cal_dinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/cal_dinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cal_lunch"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/cal_breakfast_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="讀取資料中"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/cal_breakfast"
+            app:layout_constraintStart_toStartOf="@+id/cal_breakfast"
+            app:layout_constraintTop_toBottomOf="@id/cal_breakfast" />
+
+        <TextView
+            android:id="@+id/cal_lunch_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="讀取資料中"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/cal_lunch"
+            app:layout_constraintStart_toStartOf="@+id/cal_lunch"
+            app:layout_constraintTop_toBottomOf="@id/cal_lunch" />
+
+        <TextView
+            android:id="@+id/cal_dinner_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="讀取資料中"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/cal_dinner"
+            app:layout_constraintStart_toStartOf="@+id/cal_dinner"
+            app:layout_constraintTop_toBottomOf="@id/cal_dinner" />
+
+        <ImageView
+            android:id="@+id/cal_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="110dp"
+            android:src="@drawable/cal_history"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

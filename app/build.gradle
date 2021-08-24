@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -60,7 +61,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-storage'
-    implementation 'com.google.firebase:firebase-database'
+    //implementation 'com.google.firebase:firebase-database'
 
     // Firebase UI
     implementation 'com.firebaseui:firebase-ui-database:7.1.1'
