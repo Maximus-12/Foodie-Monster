@@ -64,28 +64,28 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black_overlay"
             android:id="@+id/text_input"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="食物名稱" />
 
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:text="添加食物"
+            android:text="搜尋食物"
             app:layout_constraintEnd_toEndOf="@+id/clear"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_input" />
+            app:layout_constraintStart_toEndOf="@+id/text_input"
+            app:layout_constraintTop_toBottomOf="@+id/test_manual" />
+
         <Button
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
             android:text="清除列表"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/button"
-            app:layout_constraintTop_toBottomOf="@+id/text_input" />
+            app:layout_constraintStart_toEndOf="@+id/total"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
             android:id="@+id/textView"
@@ -96,14 +96,15 @@
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            app:layout_constraintTop_toBottomOf="@+id/text_input" />
 
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
             android:text="總計：0大卡"
+            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
