@@ -1,7 +1,6 @@
 package com.maximus.foodiemonster.ui.calrecord;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
@@ -11,16 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.maximus.foodiemonster.MainActivity;
 import com.maximus.foodiemonster.MealData;
@@ -30,15 +27,14 @@ import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
-public class ManualInputFragment extends Fragment {
+public class EatoutInputFragment extends Fragment {
 
-    private static final String TAG = "ManualInputFragment";
+    private static final String TAG = "EatoutInputFragment";
     private int TIME;// = 202108240;
-
+    
     ArrayList<String> foodname= new ArrayList<String>();
     ArrayList<String> foodcal=new ArrayList<String>();
     ArrayList<String> searchlist=new ArrayList<String>();
@@ -51,7 +47,7 @@ public class ManualInputFragment extends Fragment {
         TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
         Log.d(TAG,"Current Date :"+TIME);
 
-        View root = inflater.inflate(R.layout.fragment_cal_manual, container, false);
+        View root = inflater.inflate(R.layout.fragment_cal_eatout, container, false);
         NavController navCtrl = findNavController(this);
         TextView textview=root.findViewById(R.id.textView);
         TextView total=root.findViewById(R.id.total);
@@ -59,7 +55,7 @@ public class ManualInputFragment extends Fragment {
         Button search_button = root.findViewById(R.id.search_button);
         Button clear_button=root.findViewById(R.id.clear_button);
 
-        @NonNull int amount = ManualInputFragmentArgs.fromBundle(getArguments()).getMealType();;
+        @NonNull int amount = EatoutInputFragmentArgs.fromBundle(getArguments()).getMealType();;
         Log.d(TAG, String.valueOf(amount));
         mealtype=amount;
         mealData=new MealData(TIME*10+amount);
@@ -167,23 +163,21 @@ public class ManualInputFragment extends Fragment {
         Button save_button=root.findViewById(R.id.save_button);
         save_button.setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(R.id.action_navigation_cal_manual_to_navigation_cal_main);
+            navCtrl.navigate(R.id.action_navigation_cal_eatout_to_navigation_cal_main);
         });
 
         /*root.findViewById(R.id.bottom_ai).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(ManualInputFragmentDirections.actionNavigationCalManualToNavigationCalAi(mealtype));
+            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalAi(mealtype));
         });*/
 
-        root.findViewById(R.id.bottom_eatout).setOnClickListener(view -> {
+        root.findViewById(R.id.bottom_manual).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(ManualInputFragmentDirections.actionNavigationCalManualToNavigationCalEatout(mealtype));
+            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalManual(mealtype));
         });
-
         return root;
 
     }
-
 
 }
 

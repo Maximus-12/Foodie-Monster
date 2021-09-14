@@ -16,6 +16,26 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_cal_eatout"
+        android:name="com.maximus.foodiemonster.ui.calrecord.EatoutInputFragment"
+        android:label="CalorieRecord"
+        tools:layout="@layout/fragment_cal_eatout" >
+        <argument
+            android:name="mealType"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_navigation_cal_eatout_to_navigation_cal_main"
+            app:popUpTo="@id/navigation_cal_main" />
+
+        <!--action
+            android:id="@+id/action_navigation_cal_eatout_to_navigation_cal_ai"
+            app:popUpTo="@id/navigation_cal_ai" /-->
+        <action
+            android:id="@+id/action_navigation_cal_eatout_to_navigation_cal_manual"
+            app:destination="@id/navigation_cal_manual" />
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_cal_manual"
         android:name="com.maximus.foodiemonster.ui.calrecord.ManualInputFragment"
         android:label="CalorieRecord"
@@ -26,6 +46,13 @@
         <action
             android:id="@+id/action_navigation_cal_manual_to_navigation_cal_main"
             app:popUpTo="@id/navigation_cal_main" />
+
+        <!--action
+            android:id="@+id/action_navigation_cal_manual_to_navigation_cal_ai"
+            app:popUpTo="@id/navigation_cal_ai" /-->
+        <action
+            android:id="@+id/action_navigation_cal_manual_to_navigation_cal_eatout"
+            app:destination="@id/navigation_cal_eatout" />
     </fragment>
 
     <fragment
