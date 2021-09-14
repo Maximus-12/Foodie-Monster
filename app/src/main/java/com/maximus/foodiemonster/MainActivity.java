@@ -2,6 +2,8 @@ package com.maximus.foodiemonster;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -13,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,10 +139,13 @@ public class MainActivity extends AppCompatActivity {
     public void clear_mealdata(){
         mealData= new ArrayList<MealData>();
     }
+
     public ArrayList<MealData> get_mealdata(){//int time){
         DocumentReference docRef = db.collection("users").document("test1");
         CollectionReference dataRef=docRef.collection("data");
-        Query dataQuery=dataRef.orderBy("time");
+        int TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+        Log.d(TAG,"Current Date :"+TIME);
+        Query dataQuery=dataRef.whereGreaterThan("time",TIME*10).whereLessThan("time",(TIME+1)*10).orderBy("time");
         dataQuery.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -168,23 +176,40 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println(data);
         DocumentReference docRef = db.collection("users").document("test1");
         CollectionReference ColRef =docRef.collection("data");
-        Log.d(TAG, "Error getting documents: "+data.time);
+        Log.d(TAG, "Mealdata time: "+data.time);
         Query query = ColRef.whereEqualTo("time", data.time);
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d(TAG, "Query size: "+task.getResult().size());
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                DocumentReference tmpRef=document.getReference();
-                                Log.d(TAG, "Error getting documents: "+data);
-                                tmpRef.set(data);
+                            if(task.getResult().size()==0){
+                                docRef.collection("data").add(data);
+                            }else{
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    DocumentReference tmpRef=document.getReference();
+                                    Log.d(TAG, "if true: "+data);
+                                    Log.d(TAG, "Error getting documents: "+data);
+                                    tmpRef.set(data);
+                                }
                             }
                         } else {
+                            Log.d(TAG, "if false: "+data);
                             Log.d(TAG, "Error getting documents: ", task.getException());
                             docRef.collection("data").add(data);
                         }
                     }
                 });
+        query.get()
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.d(TAG, "Query get Failure: " + data);
+                        docRef.collection("data").add(data);
+                    }
+                });
+
+
     }
 }

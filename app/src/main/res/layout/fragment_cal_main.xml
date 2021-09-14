@@ -116,6 +116,18 @@
             app:layout_constraintStart_toStartOf="@+id/cal_dinner"
             app:layout_constraintTop_toBottomOf="@id/cal_dinner" />
 
+        <TextView
+            android:id="@+id/cal_total_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="今日總熱量：0 大卡"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/cal_history"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cal_lunch_text" />
+
         <ImageView
             android:id="@+id/cal_history"
             android:layout_width="wrap_content"

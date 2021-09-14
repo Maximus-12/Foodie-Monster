@@ -2,6 +2,8 @@ package com.maximus.foodiemonster.ui.calrecord;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,13 +30,14 @@ import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
 public class ManualInputFragment extends Fragment {
 
     private static final String TAG = "ManualInputFragment";
-    private static final int TIME = 202108240;
+    private int TIME;// = 202108240;
 
     //private ProfileViewModel profileViewModel;
     //private ArrayList<MealData> mealData_online= new ArrayList<MealData>();
@@ -42,12 +45,14 @@ public class ManualInputFragment extends Fragment {
     ArrayList<String> foodname= new ArrayList<String>();
     ArrayList<String> foodcal=new ArrayList<String>();
     ArrayList<String> searchlist=new ArrayList<String>();
-    MealData mealData=new MealData(TIME);
+    MealData mealData;
     String text="";
     int total_cal=0;
     int tmpvar;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+        Log.d(TAG,"Current Date :"+TIME);
 
         View root = inflater.inflate(R.layout.fragment_cal_manual, container, false);
         NavController navCtrl = findNavController(this);
@@ -59,7 +64,7 @@ public class ManualInputFragment extends Fragment {
 
         @NonNull int amount = ManualInputFragmentArgs.fromBundle(getArguments()).getMealType();;
         Log.d(TAG, String.valueOf(amount));
-        mealData.time+=amount;
+        mealData=new MealData(TIME*10+amount);
         text="";
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.foodname)));
@@ -70,7 +75,7 @@ public class ManualInputFragment extends Fragment {
                 i++;
             }
         } catch (IOException e) {
-            // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
+            // reader初始化時可能。使用try/catch處理例外情形。
             e.printStackTrace();
         }
 
@@ -86,38 +91,33 @@ public class ManualInputFragment extends Fragment {
             // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
             e.printStackTrace();
         }
-
         ((MainActivity) requireActivity()).clear_mealdata();
-        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata();
+        ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata();
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ((MainActivity) requireActivity()).clear_mealdata();
-            ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata();
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata();
-                Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
-                Log.d(TAG, "Numbers of mealdata :"+ mealData_online);
-                for (int i=0;i<mealData_online.size();i++){
-                    if(mealData_online.get(i).time%10==amount){
-                        mealData=mealData_online.get(i);
+            ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata();
+            Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
+            Log.d(TAG, "Numbers of mealdata :"+ mealData_online);
+            for (int i=0;i<mealData_online.size();i++){
+                if(mealData_online.get(i).time%10==amount){
+                    mealData=mealData_online.get(i);
 
-                        total_cal=mealData.totalcal;
-                        total.setText("總計："+total_cal+"大卡");
-                        for(int j=0;j<mealData.foodlist.size();j++){
-                            //Double cal=Double.parseDouble(foodcal.get(j));
-                            for(int k=0;k<foodname.size();k++){
-                                if(foodname.get(k).equals(mealData.foodlist.get(j))){
-                                    String cal=foodcal.get(k);
-                                    text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
-                                    break;
-                                }
+                    total_cal=mealData.totalcal;
+                    total.setText("總計："+total_cal+"大卡");
+                    for(int j=0;j<mealData.foodlist.size();j++){
+                        //Double cal=Double.parseDouble(foodcal.get(j));
+                        for(int k=0;k<foodname.size();k++){
+                            if(foodname.get(k).equals(mealData.foodlist.get(j))){
+                                String cal=foodcal.get(k+1);
+                                text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
+                                break;
                             }
-
                         }
-                        textview.setText(text);
+
                     }
+                    textview.setText(text);
                 }
-            }, 300);
-        }, 100);
+            }
+        }, 300);
 
 
 
@@ -131,7 +131,17 @@ public class ManualInputFragment extends Fragment {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
             alert.setTitle("搜尋結果 (一份為100公克)");
             String[] types = new String[searchlist.size()];
-            for(int k=0;k<searchlist.size();k++) types[k]=searchlist.get(k);
+            for(int k=0;k<searchlist.size();k++) {
+                types[k]=searchlist.get(k);
+                /*String tmps=searchlist.get(k);
+                tmps.replaceAll("[^\\x00-\\xff]", "**");*/
+                /*int tmpi=getWordCount(types[k]);
+                Log.d(TAG, types[k]+" : "+tmpi);
+                //char[] tmpchar=new char[(int) (42-searchlist.get(k).chars().count())];//46-chars
+                char[] tmpchar=new char[(int) (44-tmpi-types[k].length()*2)];
+                Arrays.fill(tmpchar,' ');
+                types[k]+=new String(tmpchar)+"（100克）";*/
+            }
             alert.setItems(types, (dialog, which) -> {
 
                 dialog.dismiss();
@@ -155,12 +165,13 @@ public class ManualInputFragment extends Fragment {
                 }, 1000);*/
                 for(int j=0;j<foodname.size();j++){
                     if(foodname.get(j).equals(searchlist.get(which))){
-                        String cal=foodcal.get(j);
+                        String cal=foodcal.get(j+1);
                         text= (String) textview.getText();
                         text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
                         mealData.foodlist.add(searchlist.get(which));
                         textview.setText(text);
-                        total_cal+=Integer.parseInt(cal);
+                        Log.d(TAG,"input string"+cal);
+                        total_cal+=Integer.parseInt(cal.trim());
                         mealData.totalcal=total_cal;
                         total.setText("總計："+total_cal+"大卡");
                     }
@@ -180,7 +191,7 @@ public class ManualInputFragment extends Fragment {
             textview.setText(" ");
             total_cal=0;
             total.setText("總計："+total_cal+"大卡");
-            mealData=new MealData(mealData.time);
+            mealData=new MealData(TIME*10+amount);
         });
         Button save_button=root.findViewById(R.id.save_button);
         save_button.setOnClickListener(view -> {
@@ -191,6 +202,21 @@ public class ManualInputFragment extends Fragment {
 
     }
 
+    public static int getWordCount(String s)
+    {
+        int length = 0;
+        for(int i = 0; i < s.length(); i++)
+        {
+            int ascii = Character.codePointAt(s, i);
+            if(ascii >= 0 && ascii <=255)
+                length++;
+            else
+                length += 2;
+
+        }
+        return length;
+
+    }
 }
 
 
