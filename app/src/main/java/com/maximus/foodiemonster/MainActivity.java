@@ -140,10 +140,11 @@ public class MainActivity extends AppCompatActivity {
         mealData= new ArrayList<MealData>();
     }
 
-    public ArrayList<MealData> get_mealdata(){//int time){
+    public ArrayList<MealData> get_mealdata(int time){
         DocumentReference docRef = db.collection("users").document("test1");
         CollectionReference dataRef=docRef.collection("data");
-        int TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+        //int TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+        int TIME=time;
         Log.d(TAG,"Current Date :"+TIME);
         Query dataQuery=dataRef.whereGreaterThan("time",TIME*10).whereLessThan("time",(TIME+1)*10).orderBy("time");
         dataQuery.get()
@@ -209,7 +210,5 @@ public class MainActivity extends AppCompatActivity {
                         docRef.collection("data").add(data);
                     }
                 });
-
-
     }
 }

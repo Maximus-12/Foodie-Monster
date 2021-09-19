@@ -86,9 +86,9 @@ public class EatoutInputFragment extends Fragment {
             e.printStackTrace();
         }
         ((MainActivity) requireActivity()).clear_mealdata();
-        ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata();
+        ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata(TIME);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata();
+            ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata(TIME);
             Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
             Log.d(TAG, "Numbers of mealdata :"+ mealData_online);
             for (int i=0;i<mealData_online.size();i++){
@@ -173,7 +173,7 @@ public class EatoutInputFragment extends Fragment {
 
         root.findViewById(R.id.bottom_manual).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalManual(mealtype));
+            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalManual(mealtype,TIME));
         });
         return root;
 

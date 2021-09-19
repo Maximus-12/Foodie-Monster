@@ -23,6 +23,9 @@
         <argument
             android:name="mealType"
             app:argType="integer"/>
+        <argument
+            android:name="selectTime"
+            app:argType="integer"/>
         <action
             android:id="@+id/action_navigation_cal_eatout_to_navigation_cal_main"
             app:popUpTo="@id/navigation_cal_main" />
@@ -42,6 +45,9 @@
         tools:layout="@layout/fragment_cal_manual" >
         <argument
             android:name="mealType"
+            app:argType="integer"/>
+        <argument
+            android:name="selectTime"
             app:argType="integer"/>
         <action
             android:id="@+id/action_navigation_cal_manual_to_navigation_cal_main"

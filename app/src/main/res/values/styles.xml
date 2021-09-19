@@ -5,4 +5,9 @@
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
+    <style name="calendarstyle" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:textColor">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
 </resources>

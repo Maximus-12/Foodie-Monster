@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -32,7 +34,7 @@ public class CalRecordFragment extends Fragment {
     private static final String TAG = "CalRecordFragment";
     private int TIME; //= 20210824;
     int total_cal,cal1,cal2,cal3 = 0;
-
+    Long date;
     //private ArrayList<MealData> mealData= new ArrayList<MealData>();
     //private ProfileViewModel profileViewModel;
 
@@ -49,12 +51,12 @@ public class CalRecordFragment extends Fragment {
         TextView cal_lunch_text=root.findViewById(R.id.cal_lunch_text);
         TextView cal_dinner_text=root.findViewById(R.id.cal_dinner_text);
         ((MainActivity) requireActivity()).clear_mealdata();
-        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata();
+        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata(TIME);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ArrayList<MealData> tmp4=((MainActivity) requireActivity()).get_mealdata();
+            ArrayList<MealData> tmp4=((MainActivity) requireActivity()).get_mealdata(TIME);
         }, 100);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            ArrayList<MealData> mealData=((MainActivity) requireActivity()).get_mealdata();
+            ArrayList<MealData> mealData=((MainActivity) requireActivity()).get_mealdata(TIME);
             Log.d(TAG, "Numbers of mealdata :"+ mealData.size());
             for (int i=0;i<mealData.size();i++){
                 if(mealData.get(i).time%10==1){
@@ -86,20 +88,27 @@ public class CalRecordFragment extends Fragment {
 
         ImageView cal_breakfast=root.findViewById(R.id.cal_breakfast);
         cal_breakfast.setOnClickListener(view -> {
-            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(1);
+            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(1,TIME);
             navCtrl.navigate(action);
         });
         ImageView cal_lunch=root.findViewById(R.id.cal_lunch);
         cal_lunch.setOnClickListener(view -> {
-            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(2);
+            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(2,TIME);
             navCtrl.navigate(action);
         });
         ImageView cal_dinner=root.findViewById(R.id.cal_dinner);
         cal_dinner.setOnClickListener(view -> {
-            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(3);
+            CalRecordFragmentDirections.ActionNavigationCalMainToNavigationCalManual action=CalRecordFragmentDirections.actionNavigationCalMainToNavigationCalManual(3,TIME);
             navCtrl.navigate(action);
         });
-
+        CalendarView calendar=root.findViewById(R.id.calendarView);
+        calendar.setOnDateChangeListener((CalendarView.OnDateChangeListener) (view, year, month, dayOfMonth) -> {
+            month++;
+            date = calendar.getDate();
+            //Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
+            TIME=year*10000+month*100+dayOfMonth;
+            cal_current_time.setText(year+"/"+month+"/"+dayOfMonth);
+        });
 
         return root;
     }
