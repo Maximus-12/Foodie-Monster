@@ -21,7 +21,7 @@ public class TimeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_time, container, false);
+        View root = inflater.inflate(R.layout.fragment_time_main, container, false);
         NavController navCtrl = findNavController(this);
 
         /*ImageButton btn1 = root.findViewById(R.id.imageButton1);

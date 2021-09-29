@@ -65,7 +65,7 @@
         android:id="@+id/navigation_time"
         android:name="com.maximus.foodiemonster.ui.time.TimeFragment"
         android:label="Time"
-        tools:layout="@layout/fragment_time" />
+        tools:layout="@layout/fragment_time_main" />
 
     <fragment
         android:id="@+id/navigation_showla"
