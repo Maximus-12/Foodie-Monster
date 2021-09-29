@@ -37,7 +37,7 @@ public class CalRecordFragment extends Fragment {
     Long date;
     //private ArrayList<MealData> mealData= new ArrayList<MealData>();
     //private ProfileViewModel profileViewModel;
-
+    TextView cal_breakfast_text,cal_lunch_text,cal_dinner_text,cal_total_text;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -47,10 +47,11 @@ public class CalRecordFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_cal_main, container, false);
         NavController navCtrl = findNavController(this);
         total_cal=0;
-        TextView cal_breakfast_text=root.findViewById(R.id.cal_breakfast_text);
-        TextView cal_lunch_text=root.findViewById(R.id.cal_lunch_text);
-        TextView cal_dinner_text=root.findViewById(R.id.cal_dinner_text);
-        ((MainActivity) requireActivity()).clear_mealdata();
+        cal_breakfast_text=root.findViewById(R.id.cal_breakfast_text);
+        cal_lunch_text=root.findViewById(R.id.cal_lunch_text);
+        cal_dinner_text=root.findViewById(R.id.cal_dinner_text);
+        cal_total_text=root.findViewById(R.id.cal_total_text);
+        /*((MainActivity) requireActivity()).clear_mealdata();
         ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata(TIME);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             ArrayList<MealData> tmp4=((MainActivity) requireActivity()).get_mealdata(TIME);
@@ -79,8 +80,9 @@ public class CalRecordFragment extends Fragment {
             TextView cal_total_text=root.findViewById(R.id.cal_total_text);
             cal_total_text.setText("今日總熱量："+total_cal+" 大卡");
 
-        }, 500);
-
+        }, 500);*/
+        mealdata_refresh(root);
+        //((MainActivity) requireActivity()).mealdata_refresh(cal_breakfast_text,cal_lunch_text,cal_dinner_text,cal_total_text,TIME);
 
         TextView cal_current_time=root.findViewById(R.id.cal_current_time);
         cal_current_time.setText(new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime()));
@@ -108,9 +110,48 @@ public class CalRecordFragment extends Fragment {
             //Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
             TIME=year*10000+month*100+dayOfMonth;
             cal_current_time.setText(year+"/"+month+"/"+dayOfMonth);
+            mealdata_refresh(root);
+            //((MainActivity) requireActivity()).mealdata_refresh(cal_breakfast_text,cal_lunch_text,cal_dinner_text,cal_total_text,TIME);
         });
 
         return root;
+    }
+    void mealdata_refresh(View root){
+        ((MainActivity) requireActivity()).clear_mealdata();
+        ArrayList<MealData> tmp1=((MainActivity) requireActivity()).get_mealdata(TIME);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ArrayList<MealData> tmp4=((MainActivity) requireActivity()).get_mealdata(TIME);
+        }, 100);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ArrayList<MealData> mealData=((MainActivity) requireActivity()).get_mealdata(TIME);
+            Log.d(TAG, "Numbers of mealdata :"+ mealData.size());
+            if(mealData.size()==0){
+                cal_breakfast_text.setText("尚無資料");
+                cal_lunch_text.setText("尚無資料");
+                cal_dinner_text.setText("尚無資料");
+                cal_total_text.setText("今日總熱量：0 大卡");
+            }else{
+                for (int i=0;i<mealData.size();i++){
+                    if(mealData.get(i).time%10==1){
+                        cal_breakfast_text.setText(mealData.get(i).totalcal +"大卡");
+                        cal1=mealData.get(i).totalcal;
+                    }
+                    else if(mealData.get(i).time%10==2){
+                        cal_lunch_text.setText(mealData.get(i).totalcal +"大卡");
+                        cal2=mealData.get(i).totalcal;
+                    }
+                    else if(mealData.get(i).time%10==3){
+                        cal_dinner_text.setText(mealData.get(i).totalcal +"大卡");
+                        cal3=mealData.get(i).totalcal;
+                    }
+                    total_cal=cal1+cal2+cal3;
+                }
+                if(cal_breakfast_text.getText().equals("讀取資料中")||cal_breakfast_text.getText().equals("0大卡")) cal_breakfast_text.setText("尚無資料");
+                if(cal_lunch_text.getText().equals("讀取資料中")||cal_lunch_text.getText().equals("0大卡")) cal_lunch_text.setText("尚無資料");
+                if(cal_dinner_text.getText().equals("讀取資料中")||cal_dinner_text.getText().equals("0大卡")) cal_dinner_text.setText("尚無資料");
+                cal_total_text.setText("今日總熱量："+total_cal+" 大卡");
+            }
+        }, 500);
     }
 }
 

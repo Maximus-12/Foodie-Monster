@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -211,4 +214,64 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+    /*public void mealdata_refresh(TextView cal_breakfast_text,TextView cal_lunch_text,TextView cal_dinner_text,TextView cal_total_text,int TIME){
+        clear_mealdata();
+        DocumentReference docRef = db.collection("users").document("test1");
+        CollectionReference dataRef=docRef.collection("data");
+        Log.d(TAG,"Current Date :"+TIME);
+        Query dataQuery=dataRef.whereGreaterThan("time",TIME*10).whereLessThan("time",(TIME+1)*10).orderBy("time");
+        dataQuery.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> docMap=document.getData();
+                                Log.d(TAG, "Map data: " + docMap);
+                                foodCal=String.valueOf(docMap.get("foodlist"));
+                                ArrayList<String> foodl=new ArrayList<String>((Collection<? extends String>) docMap.get("foodlist"));
+                                Log.d(TAG, "Length: " + foodl.size());
+                                Log.d(TAG, "ArrayList data: " + foodl);
+                                MealData tmp=new MealData();
+                                tmp.time=Integer.parseInt(String.valueOf(docMap.get("time")));
+                                tmp.foodlist=new ArrayList<String>((Collection<? extends String>) docMap.get("foodlist"));
+                                tmp.totalcal=Integer.parseInt(String.valueOf(docMap.get("totalcal")));
+                                mealData.add(tmp);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        int cal1=0,cal2=0,cal3=0,total_cal=0;
+        Log.d(TAG, "Numbers of mealdata :"+ mealData.size());
+        if(mealData.size()==0){
+            cal_breakfast_text.setText("尚無資料");
+            cal_lunch_text.setText("尚無資料");
+            cal_dinner_text.setText("尚無資料");
+            cal_total_text.setText("今日總熱量：0 大卡");
+        }else{
+            for (int i=0;i<mealData.size();i++){
+                if(mealData.get(i).time%10==1){
+                    cal_breakfast_text.setText(mealData.get(i).totalcal +"大卡");
+                    cal1=mealData.get(i).totalcal;
+                }
+                else if(mealData.get(i).time%10==2){
+                    cal_lunch_text.setText(mealData.get(i).totalcal +"大卡");
+                    cal2=mealData.get(i).totalcal;
+                }
+                else if(mealData.get(i).time%10==3){
+                    cal_dinner_text.setText(mealData.get(i).totalcal +"大卡");
+                    cal3=mealData.get(i).totalcal;
+                }
+                total_cal=cal1+cal2+cal3;
+            }
+            if(cal_breakfast_text.getText().equals("讀取資料中")||cal_breakfast_text.getText().equals("0大卡")) cal_breakfast_text.setText("尚無資料");
+            if(cal_lunch_text.getText().equals("讀取資料中")||cal_lunch_text.getText().equals("0大卡")) cal_lunch_text.setText("尚無資料");
+            if(cal_dinner_text.getText().equals("讀取資料中")||cal_dinner_text.getText().equals("0大卡")) cal_dinner_text.setText("尚無資料");
+            cal_total_text.setText("今日總熱量："+total_cal+" 大卡");
+        }
+    }*/
 }

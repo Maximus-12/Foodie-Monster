@@ -41,7 +41,7 @@
         android:clickable="true"
         app:backgroundTint="@color/menu_button"
         app:borderWidth="0dp"
-        app:fabCustomSize="70dp"
+        app:fabCustomSize="50dp"
         app:fabSize="auto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/nav_host_fragment"

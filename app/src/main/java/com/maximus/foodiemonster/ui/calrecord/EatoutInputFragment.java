@@ -44,8 +44,8 @@ public class EatoutInputFragment extends Fragment {
     int mealtype=0;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
-        Log.d(TAG,"Current Date :"+TIME);
+        //TIME=Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+        //Log.d(TAG,"Current Date :"+TIME);
 
         View root = inflater.inflate(R.layout.fragment_cal_eatout, container, false);
         NavController navCtrl = findNavController(this);
@@ -56,6 +56,7 @@ public class EatoutInputFragment extends Fragment {
         Button clear_button=root.findViewById(R.id.clear_button);
 
         @NonNull int amount = EatoutInputFragmentArgs.fromBundle(getArguments()).getMealType();;
+        TIME = ManualInputFragmentArgs.fromBundle(getArguments()).getSelectTime();
         Log.d(TAG, String.valueOf(amount));
         mealtype=amount;
         mealData=new MealData(TIME*10+amount);
