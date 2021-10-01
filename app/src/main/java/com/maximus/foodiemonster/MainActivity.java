@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mSignInClient;
     private FirebaseAuth mFirebaseAuth;
     private String foodCal;
+    private int IFseleceted;
     private ArrayList<MealData> mealData= new ArrayList<MealData>();
     // [START declare_database_ref]
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -274,4 +276,53 @@ public class MainActivity extends AppCompatActivity {
             cal_total_text.setText("今日總熱量："+total_cal+" 大卡");
         }
     }*/
+    public int get_IFselected(){
+        DocumentReference docRef = db.collection("users").document("test1");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Map<String, Object> docMap=document.getData();
+                        Log.d(TAG, "Map data: " + docMap);
+                        try{
+                            IFseleceted=Integer.parseInt(String.valueOf(docMap.get("IFselected")));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                            IFseleceted=0;
+                        }
+                        Log.d(TAG, "IFseleceted: " + IFseleceted);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        IFseleceted=0;
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+        return IFseleceted;
+    }
+
+    public void save_IFselected(int IFseleceted){
+        Map<String, Integer> IF = new HashMap<>();
+        IF.put("IFselected",IFseleceted);
+        //DocumentReference docRef = db.collection("users").document("test1");
+        db.collection("users").document("test1")
+                .set(IF)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+    }
 }

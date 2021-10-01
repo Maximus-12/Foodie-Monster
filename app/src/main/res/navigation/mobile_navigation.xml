@@ -92,6 +92,9 @@
         <action
             android:id="@+id/action_navigation_time_selcet_ask_to_navigation_time"
             app:popUpTo="@id/navigation_time" />
+        <action
+            android:id="@+id/action_navigation_time_selcet_ask_to_navigation_time_select"
+            app:destination="@id/navigation_time_select" />
     </fragment>
 
     <fragment
