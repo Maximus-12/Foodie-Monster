@@ -41,47 +41,54 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/time_clock"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/time_clock"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/time_clock_text"
+            android:id="@+id/time_1212"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="尚未選取斷食法"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/time_button"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/time_1212"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/time_button"
-            android:layout_width="200dp"
-            android:layout_height="80dp"
-            android:src="@drawable/time_button"
-            app:layout_constraintBottom_toTopOf="@+id/time_chart"
+            android:id="@+id/time_1410"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/time_1410"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time_clock" />
+            app:layout_constraintTop_toBottomOf="@+id/time_1212" />
 
         <ImageView
-            android:id="@+id/time_chart"
-            android:layout_width="350dp"
-            android:layout_height="170dp"
-            android:layout_marginBottom="100dp"
-            android:src="@drawable/time_fat_chart"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/time_168"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/time_168"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_1410" />
+
+        <ImageView
+            android:id="@+id/time_186"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/time_186"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_168" />
+
+
+        <ImageView
+            android:id="@+id/time_showla"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/icon_bottom_showla"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_186" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,7 +13,7 @@ import com.maximus.foodiemonster.R;
 
 import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
-public class TimeFragment extends Fragment {
+public class TimeSelectAskFragment extends Fragment {
 
 
     //private ProfileViewModel profileViewModel;
@@ -22,7 +21,7 @@ public class TimeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_time_main, container, false);
+        View root = inflater.inflate(R.layout.fragment_time_select_ask, container, false);
         NavController navCtrl = findNavController(this);
 
         /*ImageButton btn1 = root.findViewById(R.id.imageButton1);
@@ -42,10 +41,6 @@ public class TimeFragment extends Fragment {
                 navCtrl.navigate(R.id.nav_mail);
             }
         });*/
-        ImageView time_chart=root.findViewById(R.id.time_chart);
-        time_chart.setOnClickListener(view ->{
-
-        });
         return root;
     }
 }

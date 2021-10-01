@@ -65,7 +65,34 @@
         android:id="@+id/navigation_time"
         android:name="com.maximus.foodiemonster.ui.time.TimeFragment"
         android:label="Time"
-        tools:layout="@layout/fragment_time_main" />
+        tools:layout="@layout/fragment_time_main" >
+        <action
+            android:id="@+id/action_navigation_time_to_navigation_time_select"
+            app:destination="@id/navigation_time_select" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_time_select"
+        android:name="com.maximus.foodiemonster.ui.time.TimeSelectFragment"
+        android:label="Time"
+        tools:layout="@layout/fragment_time_select" >
+        <action
+            android:id="@+id/action_navigation_time_select_to_navigation_time_selcet_ask"
+            app:destination="@id/navigation_time_selcet_ask" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_time_selcet_ask"
+        android:name="com.maximus.foodiemonster.ui.time.TimeSelectAskFragment"
+        android:label="Time"
+        tools:layout="@layout/fragment_time_select_ask" >
+        <argument
+            android:name="selected"
+            app:argType="integer"/>
+        <action
+            android:id="@+id/action_navigation_time_selcet_ask_to_navigation_time"
+            app:popUpTo="@id/navigation_time" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_showla"
