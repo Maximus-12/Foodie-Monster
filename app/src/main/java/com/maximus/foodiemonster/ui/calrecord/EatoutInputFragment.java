@@ -167,10 +167,10 @@ public class EatoutInputFragment extends Fragment {
             navCtrl.navigate(R.id.action_navigation_cal_eatout_to_navigation_cal_main);
         });
 
-        /*root.findViewById(R.id.bottom_ai).setOnClickListener(view -> {
+        root.findViewById(R.id.bottom_ai).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalAi(mealtype));
-        });*/
+            navCtrl.navigate(EatoutInputFragmentDirections.actionNavigationCalEatoutToNavigationCalAi(mealtype,TIME));
+        });
 
         root.findViewById(R.id.bottom_manual).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);

@@ -171,10 +171,10 @@ public class ManualInputFragment extends Fragment {
             navCtrl.navigate(R.id.action_navigation_cal_manual_to_navigation_cal_main);
         });
 
-        /*root.findViewById(R.id.bottom_ai).setOnClickListener(view -> {
+        root.findViewById(R.id.bottom_ai).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
-            navCtrl.navigate(ManualInputFragmentDirections.actionNavigationCalManualToNavigationCalAi(mealtype));
-        });*/
+            navCtrl.navigate(ManualInputFragmentDirections.actionNavigationCalManualToNavigationCalAi(mealtype,TIME));
+        });
 
         root.findViewById(R.id.bottom_eatout).setOnClickListener(view -> {
             ((MainActivity)getActivity()).save_mealdata(mealData);
