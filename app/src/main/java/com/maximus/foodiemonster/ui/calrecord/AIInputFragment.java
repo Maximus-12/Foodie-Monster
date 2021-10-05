@@ -6,7 +6,12 @@ import android.app.Instrumentation;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.net.Uri;
@@ -53,12 +58,18 @@ import com.maximus.foodiemonster.MealData;
 import com.maximus.foodiemonster.R;
 import com.opencsv.CSVReader;
 
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.task.vision.detector.Detection;
+import org.tensorflow.lite.task.vision.detector.ObjectDetector;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -84,7 +95,8 @@ public class AIInputFragment extends Fragment {
     PreviewView mPreviewView;
     ImageView captureImage,imageView;
     private Handler handler;
-    Bitmap bitmap;
+    Bitmap bitmaptmp;
+    private Float MAX_FONT_SIZE = 96F;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -218,16 +230,16 @@ public class AIInputFragment extends Fragment {
                         Uri savedUri = Uri.fromFile(file);
                         //Bitmap bitmap = null;
                         try {
-                            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), savedUri);
+                            bitmaptmp = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), savedUri);
                             Log.d(TAG, "onBitmapSaved: " );
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         //翻轉圖片
-                        if (bitmap.getWidth() > bitmap.getHeight()) {
+                        if (bitmaptmp.getWidth() > bitmaptmp.getHeight()) {
                             Matrix matrix = new Matrix();
                             matrix.setRotate(90f);
-                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                            bitmaptmp = Bitmap.createBitmap(bitmaptmp, 0, 0, bitmaptmp.getWidth(), bitmaptmp.getHeight(), matrix, true);
                         }
                         /*imageView.setImageBitmap(bitmap);
                         imageView.setVisibility(View.VISIBLE);
@@ -235,7 +247,18 @@ public class AIInputFragment extends Fragment {
                             imageView.setVisibility(View.GONE);
                         });*/
                         handler.post(()->{
-                            imageView.setImageBitmap(bitmap);
+                            imageView.setImageBitmap(bitmaptmp);
+                            imageView.setVisibility(View.VISIBLE);
+                            imageView.setOnClickListener(view->{
+                                imageView.setVisibility(View.GONE);
+                            });
+                            try {
+                                Log.d(TAG, "tryObjectDetection: " );
+                                runObjectDetection();
+                            } catch (IOException e) {
+                                Log.d(TAG, "ObjectDetectionerror: " );
+                                e.printStackTrace();
+                            }
                         });
                     }
                     @Override
@@ -259,6 +282,122 @@ public class AIInputFragment extends Fragment {
 
         return app_folder_path;
     }
+
+    private void runObjectDetection() throws IOException {
+        // Step 1: 創建圖像物件
+        TensorImage image = TensorImage.fromBitmap(bitmaptmp);
+        Log.d(TAG, "TensorImage image: " );
+        // Step 2: 初始化檢測器
+        ObjectDetector.ObjectDetectorOptions options = ObjectDetector.ObjectDetectorOptions.builder()
+                .setMaxResults(5)
+                .setScoreThreshold(0.3f)
+                .build();
+        ObjectDetector detector = ObjectDetector.createFromFileAndOptions(
+                getActivity(),
+                "models.tflite",
+                options
+        );
+        Log.d(TAG, "ObjectDetector.create: " );
+
+        // Step 3: 將圖像饋送到檢測器
+        List<Detection> results = detector.detect(image);
+        Log.d(TAG, "Results: "+results);
+        // Step 4: 檢測結果
+        List<DetectionResult> resultToDisplay=new ArrayList<DetectionResult>();
+        for(int i=0;i<results.size();i++){
+            Log.d(TAG, "Results"+i+"："+results.get(i));
+            Detection tmp=results.get(i);
+            Log.d(TAG, "Results BoundingBox"+i+"："+tmp.getBoundingBox());
+            Log.d(TAG, "Results getCategories"+i+"："+tmp.getCategories());
+            Log.d(TAG, "Results getCategories.get0"+i+"："+tmp.getCategories().get(0));
+            //tmp.getCategories().get(0).getScore()
+            resultToDisplay.add(new DetectionResult(tmp.getBoundingBox(),tmp.getCategories().get(0).getLabel()+tmp.getCategories().get(0).getScore()*100+"%"));
+        }
+        /*List<DetectionResult> resultToDisplay = results.map {
+            // Get the top-1 category and craft the display text
+            val category = it.categories.first()
+            val text = "${category.label}, ${category.score.times(100).toInt()}%"
+
+            // Create a data object to display the detection result
+            DetectionResult(it.boundingBox, text)
+        }*/
+        // Draw the detection result on the bitmap and show it.
+        Bitmap imgWithResult = drawDetectionResult(bitmaptmp, resultToDisplay);
+        handler.post(()->{
+            imageView.setImageBitmap(imgWithResult);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setOnClickListener(view->{
+                imageView.setVisibility(View.GONE);
+            });
+        });
+
+    }
+
+    /**
+     * drawDetectionResult(bitmap: Bitmap, detectionResults: List<DetectionResult>
+     *      Draw a box around each objects and show the object's name.
+     */
+    private Bitmap drawDetectionResult(
+            Bitmap bitmap,
+            List<DetectionResult> detectionResults
+    ){
+        Bitmap outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(outputBitmap);
+        Paint pen = new Paint();
+        pen.setTextAlign(Paint.Align.LEFT);
+
+        detectionResults.forEach((it)->{
+            // draw bounding box
+            pen.setColor(Color.RED);
+            pen.setStrokeWidth(8F);
+            pen.setStyle(Paint.Style.STROKE);
+            RectF box = it.boundingBox;
+            canvas.drawRect(box, pen);
+
+            Rect tagSize = new Rect(0, 0, 0, 0);
+
+            // calculate the right font size
+            pen.setStyle(Paint.Style.FILL_AND_STROKE);
+            pen.setColor(Color.YELLOW);
+            pen.setStrokeWidth(2F);
+
+            pen.setTextSize(MAX_FONT_SIZE);
+            pen.getTextBounds(it.text, 0, it.text.length(), tagSize);
+            Float fontSize = pen.getTextSize() * box.width() / tagSize.width();
+
+            // adjust the font size so texts are inside the bounding box
+            if (fontSize < pen.getTextSize()) pen.setTextSize(fontSize);
+
+            Float margin = (box.width() - tagSize.width()) / 2.0F;
+            if (margin < 0F) margin = 0F;
+            canvas.drawText(
+                    it.text, box.left + margin,
+                    box.top + tagSize.height()*1F, pen
+            );
+
+        });
+
+
+
+        return outputBitmap;
+    }
+}
+
+/**
+ * DetectionResult
+ *      A class to store the visualization info of a detected object.
+ */
+class DetectionResult {
+
+    public RectF boundingBox;
+    public String text;
+
+    public DetectionResult(RectF boundingBox, String text) {
+        this.boundingBox=boundingBox;
+        this.text=text;
+    }
+}
+
 
     /*private void startCamera(PreviewView previewView,ImageView imageView){
         ListenableFuture cameraProviderFuture=ProcessCameraProvider.getInstance((MainActivity)getActivity());
@@ -386,7 +525,6 @@ public class AIInputFragment extends Fragment {
         });
 
     }*/
-}
 
 
 
