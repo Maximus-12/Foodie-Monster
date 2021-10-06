@@ -12,7 +12,7 @@
         android:title="" />
 
     <item
-        android:id="@+id/navigation_showla"
+        android:id="@+id/navigation_showla_main"
         android:icon="@drawable/icon_bottom_showla"
         android:title="" />
 </menu>
