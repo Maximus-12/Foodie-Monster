@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                                 MealData tmp=new MealData();
                                 tmp.time=Integer.parseInt(String.valueOf(docMap.get("time")));
                                 tmp.foodlist=new ArrayList<String>((Collection<? extends String>) docMap.get("foodlist"));
+                                tmp.foodcallist=new ArrayList<Integer>((Collection<? extends Integer>) docMap.get("foodcallist"));
                                 tmp.totalcal=Integer.parseInt(String.valueOf(docMap.get("totalcal")));
                                 mealData.add(tmp);
                             }

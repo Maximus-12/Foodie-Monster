@@ -104,14 +104,14 @@ public class ManualInputFragment extends Fragment {
                     total.setText("總計："+total_cal+"大卡");
                     for(int j=0;j<mealData.foodlist.size();j++){
                         //Double cal=Double.parseDouble(foodcal.get(j));
-                        for(int k=0;k<foodname.size();k++){
+                        /*for(int k=0;k<foodname.size();k++){
                             if(foodname.get(k).equals(mealData.foodlist.get(j))){
                                 String cal=foodcal.get(k+1);
                                 text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
                                 break;
                             }
-                        }
-
+                        }*/
+                        text+=mealData.foodlist.get(j)+"："+mealData.foodcallist.get(j)+"大卡\n";
                     }
                     textview.setText(text);
                 }
@@ -141,6 +141,7 @@ public class ManualInputFragment extends Fragment {
                         text= (String) textview.getText();
                         text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
                         mealData.foodlist.add(searchlist.get(which));
+                        mealData.foodcallist.add(Integer.parseInt(cal));
                         textview.setText(text);
                         Log.d(TAG,"input string"+cal);
                         total_cal+=Integer.parseInt(cal.trim());

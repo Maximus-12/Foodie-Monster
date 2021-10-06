@@ -34,10 +34,16 @@ public class EatoutInputFragment extends Fragment {
 
     private static final String TAG = "EatoutInputFragment";
     private int TIME;// = 202108240;
-    
+    ArrayList<String> storelist=new ArrayList<>();
+    ArrayList<String> storecsvlist=new ArrayList<>();
     ArrayList<String> foodname= new ArrayList<String>();
     ArrayList<String> foodcal=new ArrayList<String>();
     ArrayList<String> searchlist=new ArrayList<String>();
+    ArrayList<String> searchedstore=new ArrayList<String>();
+    ArrayList<String> searchedstorecsv=new ArrayList<String>();
+    TextView textview;
+    TextView total;
+
     MealData mealData;
     String text="";
     int total_cal=0;
@@ -49,8 +55,8 @@ public class EatoutInputFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_cal_eatout, container, false);
         NavController navCtrl = findNavController(this);
-        TextView textview=root.findViewById(R.id.textView);
-        TextView total=root.findViewById(R.id.total);
+        textview=root.findViewById(R.id.textView);
+        total=root.findViewById(R.id.total);
         TextInputEditText textinput=root.findViewById(R.id.text_input);
         Button search_button = root.findViewById(R.id.search_button);
         Button clear_button=root.findViewById(R.id.clear_button);
@@ -61,31 +67,25 @@ public class EatoutInputFragment extends Fragment {
         mealtype=amount;
         mealData=new MealData(TIME*10+amount);
         text="";
-        try {
-            CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.foodname)));
-            int i = 0;
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                foodname.add(nextLine[0]);
-                i++;
-            }
-        } catch (IOException e) {
-            // reader初始化時可能。使用try/catch處理例外情形。
-            e.printStackTrace();
-        }
 
         try {
-            CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.foodcal)));
+            CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.listofstore)));
             int i = 0;
             String[] nextLine;
+            storelist.clear();
+            storecsvlist.clear();
             while ((nextLine = reader.readNext()) != null) {
-                foodcal.add(nextLine[0]);
+                Log.d(TAG, "nextLine :"+ nextLine);
+                storelist.add(nextLine[0]);
+                storecsvlist.add(nextLine[1]);
                 i++;
             }
         } catch (IOException e) {
             // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
             e.printStackTrace();
         }
+
+
         ((MainActivity) requireActivity()).clear_mealdata();
         ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata(TIME);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -100,13 +100,15 @@ public class EatoutInputFragment extends Fragment {
                     total.setText("總計："+total_cal+"大卡");
                     for(int j=0;j<mealData.foodlist.size();j++){
                         //Double cal=Double.parseDouble(foodcal.get(j));
-                        for(int k=0;k<foodname.size();k++){
+                        /*for(int k=0;k<foodname.size();k++){
                             if(foodname.get(k).equals(mealData.foodlist.get(j))){
                                 String cal=foodcal.get(k+1);
                                 text+=mealData.foodlist.get(j)+"："+cal+"大卡\n";
                                 break;
                             }
-                        }
+                        }*/
+                        //mealData.foodcallist.add(Integer.parseInt(cal));
+                        text+=mealData.foodlist.get(j)+"："+mealData.foodcallist.get(j)+"大卡\n";
 
                     }
                     textview.setText(text);
@@ -119,34 +121,69 @@ public class EatoutInputFragment extends Fragment {
 
         search_button.setOnClickListener(view -> {
 
-            searchlist.clear();
-            for(int i=0;i<1793;i++)if(foodname.get(i).contains(String.valueOf(textinput.getText()))) searchlist.add(foodname.get(i));
-            for(int j=0;j<searchlist.size();j++) Log.d("Input", "searched : " + searchlist.get(j));
-
-            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-            alert.setTitle("搜尋結果 (一份為100公克)");
-            String[] types = new String[searchlist.size()];
-            for(int k=0;k<searchlist.size();k++) {
-                types[k]=searchlist.get(k);
+            textinput.getText();
+            searchedstore.clear();
+            searchedstorecsv.clear();
+            for(int i=0;i<storelist.size();i++)if(storelist.get(i).contains(String.valueOf(textinput.getText()))) {
+                searchedstore.add(storelist.get(i));
+                searchedstorecsv.add(storecsvlist.get(i));
             }
-            alert.setItems(types, (dialog, which) -> {
+            for(int j=0;j<searchedstore.size();j++) Log.d("Input store", "searched : " + searchedstore.get(j)+",csv:"+searchedstorecsv.get(j));
+
+            AlertDialog.Builder storealert = new AlertDialog.Builder(getActivity());
+            storealert.setTitle("店名搜尋結果");
+            String[] storetypes = new String[searchedstore.size()];
+            String[] storecsvtypes = new String[searchedstorecsv.size()];
+            for(int k=0;k<searchedstore.size();k++) {
+                storetypes[k]=searchedstore.get(k);
+            }
+            storealert.setItems(storetypes, (dialog, which) -> {
                 dialog.dismiss();
-                for(int j=0;j<foodname.size();j++){
-                    if(foodname.get(j).equals(searchlist.get(which))){
-                        String cal=foodcal.get(j+1);
-                        text= (String) textview.getText();
-                        text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
-                        mealData.foodlist.add(searchlist.get(which));
-                        textview.setText(text);
-                        Log.d(TAG,"input string"+cal);
-                        total_cal+=Integer.parseInt(cal.trim());
-                        mealData.totalcal=total_cal;
-                        total.setText("總計："+total_cal+"大卡");
+                try {
+                    //CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.burgerking)));
+                    CSVReader reader = new CSVReader(new InputStreamReader(
+                            getContext().getAssets().open(searchedstorecsv.get(which)+".csv")
+                    ));
+                    int i = 0;
+                    String[] nextLine;
+                    foodname.clear();
+                    foodcal.clear();
+                    while ((nextLine = reader.readNext()) != null) {
+                        Log.d(TAG, "nextLine :"+ nextLine);
+                        foodname.add(nextLine[0]);
+                        foodcal.add(nextLine[2]);
+                        i++;
                     }
+                    search_alert(searchedstore.get(which));
+                } catch (IOException e) {
+                    // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
+                    e.printStackTrace();
                 }
 
+
             });
-            alert.show();
+            storealert.show();
+
+
+
+            /*try {
+                CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.burgerking)));
+                int i = 0;
+                String[] nextLine;
+                foodname.clear();
+                foodcal.clear();
+                while ((nextLine = reader.readNext()) != null) {
+                    Log.d(TAG, "nextLine :"+ nextLine);
+                    foodname.add(nextLine[0]);
+                    foodcal.add(nextLine[2]);
+                    i++;
+                }
+            } catch (IOException e) {
+                // reader在初始化時可能遭遇問題。記得使用try/catch處理例外情形。
+                e.printStackTrace();
+            }*/
+
+
 
 
             /*try{
@@ -180,6 +217,36 @@ public class EatoutInputFragment extends Fragment {
 
     }
 
+    public void search_alert(String storename){
+        searchlist.clear();
+        for(int i=0;i<foodname.size();i++) searchlist.add(foodname.get(i));
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(storename+"食品目錄");
+        String[] types = new String[searchlist.size()];
+        for(int k=0;k<searchlist.size();k++) {
+            types[k]=searchlist.get(k);
+        }
+        alert.setItems(types, (dialog, which) -> {
+            dialog.dismiss();
+            for(int j=0;j<foodname.size();j++){
+                if(foodname.get(j).equals(searchlist.get(which))){
+                    String cal=foodcal.get(j+1);
+                    text= (String) textview.getText();
+                    text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
+                    mealData.foodlist.add(searchlist.get(which));
+                    mealData.foodcallist.add(Integer.parseInt(cal));
+                    textview.setText(text);
+                    Log.d(TAG,"input string"+cal);
+                    total_cal+=Integer.parseInt(cal.trim());
+                    mealData.totalcal=total_cal;
+                    total.setText("總計："+total_cal+"大卡");
+                }
+            }
+
+        });
+        alert.show();
+    }
 }
 
 
