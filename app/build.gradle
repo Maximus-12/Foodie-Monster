@@ -7,6 +7,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('G:\\Android\\AndroidKeys\\key.jks')
+            storePassword 'acer2805102'
+            keyPassword 'acer2805102'
+            keyAlias 'key'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 

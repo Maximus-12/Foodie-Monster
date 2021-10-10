@@ -13,11 +13,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -73,10 +75,12 @@ public class AIInputFragment extends Fragment {
     int total_cal=0;
     int mealtype=0;
     PreviewView mPreviewView;
-    ImageView captureImage,imageView;
+    ImageView imageView;
+    Button captureImage,redo_btn,done_btn;
     private Handler handler;
     Bitmap bitmaptmp;
-    private Float MAX_FONT_SIZE = 96F;
+    ArrayList<String> detectedfoods= new ArrayList<String>();
+    private Float MAX_FONT_SIZE = 192F;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -99,11 +103,28 @@ public class AIInputFragment extends Fragment {
             ((MainActivity)getActivity()).save_mealdata(mealData);
             navCtrl.navigate(AIInputFragmentDirections.actionNavigationCalAiToNavigationCalEatout(mealtype,TIME));
         });
+
+        ((MainActivity) requireActivity()).clear_mealdata();
+        ArrayList<MealData> tmp2=((MainActivity) requireActivity()).get_mealdata(TIME);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ArrayList<MealData> mealData_online=((MainActivity) requireActivity()).get_mealdata(TIME);
+            Log.d(TAG, "Numbers of mealdata :"+ mealData_online.size());
+            Log.d(TAG, "Numbers of mealdata :"+ mealData_online);
+            for (int i=0;i<mealData_online.size();i++){
+                if(mealData_online.get(i).time%10==amount){
+                    mealData=mealData_online.get(i);
+                }
+            }
+        }, 300);
+
+
         //camera preview
         outputDirectory = getActivity().getExternalFilesDir("camera");
         mPreviewView=root.findViewById(R.id.previewView);
         captureImage=root.findViewById(R.id.capture_button);
         imageView=root.findViewById(R.id.imagePreview);
+        redo_btn=root.findViewById(R.id.redo_button);
+        done_btn=root.findViewById(R.id.done_button);
         handler=new Handler();
         //startCamera(previewView,imageView);
         /*ImageButton btn=root.findViewById(R.id.capture_button);
@@ -115,8 +136,60 @@ public class AIInputFragment extends Fragment {
         } else{
             ActivityCompat.requestPermissions(getActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
-        return root;
 
+        redo_btn.setOnClickListener(view->{
+            redo_btn.setVisibility(View.GONE);
+            done_btn.setVisibility(View.GONE);
+            captureImage.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+            detectedfoods.clear();
+        });
+        done_btn.setOnClickListener(view->{
+            for(int i=0;i<detectedfoods.size();i++){
+                String tmptext=detectedfoods.get(i);
+                mealData.foodlist.add(tmptext);
+                if(tmptext.contains("蛋")){
+                    mealData.foodcallist.add(135);
+                    mealData.totalcal+=135;
+                /*蛋 135
+                蘋果 49
+                米飯 182
+                鮭魚 158
+                空心菜 18
+                高麗菜 21
+                南瓜 69*/
+                }
+                else if(tmptext.contains("蘋果")){
+                    mealData.foodcallist.add(49);
+                    mealData.totalcal+=49;
+                }
+                else if(tmptext.contains("米飯")){
+                    mealData.foodcallist.add(182);
+                    mealData.totalcal+=182;
+                }
+                else if(tmptext.contains("鮭魚")){
+                    mealData.foodcallist.add(158);
+                    mealData.totalcal+=158;
+                }
+                else if(tmptext.contains("空心菜")){
+                    mealData.foodcallist.add(18);
+                    mealData.totalcal+=18;
+                }
+                else if(tmptext.contains("高麗菜")){
+                    mealData.foodcallist.add(21);
+                    mealData.totalcal+=21;
+                }
+                else if(tmptext.contains("南瓜")){
+                    mealData.foodcallist.add(69);
+                    mealData.totalcal+=69;
+                }
+            }
+            ((MainActivity)getActivity()).save_mealdata(mealData);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                navCtrl.navigate(AIInputFragmentDirections.actionNavigationCalAiMainToNavigationCalAiResult(mealtype,TIME));
+            }, 500);
+        });
+        return root;
     }
 
     private boolean allPermissionsGranted(){
@@ -229,9 +302,9 @@ public class AIInputFragment extends Fragment {
                         handler.post(()->{
                             imageView.setImageBitmap(bitmaptmp);
                             imageView.setVisibility(View.VISIBLE);
-                            imageView.setOnClickListener(view->{
-                                imageView.setVisibility(View.GONE);
-                            });
+                            redo_btn.setVisibility(View.VISIBLE);
+                            done_btn.setVisibility(View.VISIBLE);
+                            captureImage.setVisibility(View.GONE);
                             try {
                                 Log.d(TAG, "tryObjectDetection: " );
                                 runObjectDetection();
@@ -291,7 +364,39 @@ public class AIInputFragment extends Fragment {
             Log.d(TAG, "Results getCategories"+i+"："+tmp.getCategories());
             Log.d(TAG, "Results getCategories.get0"+i+"："+tmp.getCategories().get(0));
             //tmp.getCategories().get(0).getScore()
-            resultToDisplay.add(new DetectionResult(tmp.getBoundingBox(),tmp.getCategories().get(0).getLabel()+tmp.getCategories().get(0).getScore()*100+"%"));
+            String tmptext=tmp.getCategories().get(0).getLabel();
+            if(tmptext.contains("egg")){
+                tmptext="蛋";
+                /*蛋 135
+                蘋果 49
+                米飯 182
+                鮭魚 158
+                空心菜 18
+                高麗菜 21
+                南瓜 69*/
+            }
+            else if(tmptext.contains("apple")){
+                tmptext="蘋果";
+            }
+            else if(tmptext.contains("rice")){
+                tmptext="米飯";
+            }
+            else if(tmptext.contains("salmon")){
+                tmptext="鮭魚";
+            }
+            else if(tmptext.contains("waterspinach")){
+                tmptext="空心菜";
+            }
+            else if(tmptext.contains("cabbage")){
+                tmptext="高麗菜";
+            }
+            else if(tmptext.contains("pumpkin")){
+                tmptext="南瓜";
+            }
+            Log.d(TAG, "tmptext:"+tmptext);
+            //mealData.foodlist.add(tmptext);
+            detectedfoods.add(tmptext);
+            resultToDisplay.add(new DetectionResult(tmp.getBoundingBox(),tmptext+Integer.valueOf((int) (tmp.getCategories().get(0).getScore()*100))+"%"));
         }
         /*List<DetectionResult> resultToDisplay = results.map {
             // Get the top-1 category and craft the display text
@@ -304,11 +409,9 @@ public class AIInputFragment extends Fragment {
         // Draw the detection result on the bitmap and show it.
         Bitmap imgWithResult = drawDetectionResult(bitmaptmp, resultToDisplay);
         handler.post(()->{
+            Log.d(TAG, "detected foods:"+detectedfoods);
             imageView.setImageBitmap(imgWithResult);
             imageView.setVisibility(View.VISIBLE);
-            imageView.setOnClickListener(view->{
-                imageView.setVisibility(View.GONE);
-            });
         });
 
     }
@@ -377,134 +480,4 @@ class DetectionResult {
         this.text=text;
     }
 }
-
-
-    /*private void startCamera(PreviewView previewView,ImageView imageView){
-        ListenableFuture cameraProviderFuture=ProcessCameraProvider.getInstance((MainActivity)getActivity());
-        cameraProviderFuture.addListener(()->{
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            try {
-                cameraProvider = (ProcessCameraProvider) cameraProviderFuture.get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //初始化Preview
-            // Preview*/
-            /*Preview preview = new Preview.Builder().build();
-            preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
-            //imageCapture = new ImageCapture.Builder().build();
-            Log.d(TAG, "takePicture: " );
-
-            //ImageCapture imageCapture = new ImageCapture.Builder().build();
-
-            ImageAnalysis imageAnalyzer = new ImageAnalysis.Builder().build();
-            //imageAnalyzer.setAnalyzer(cameraExecutor, new LuminosityAnalyzer ( luma ->
-            //        Log.d(TAG, "Average luminosity: $luma")
-            //));
-            imageAnalyzer.setAnalyzer(cameraExecutor, new LuminosityAnalyzer());
-
-
-            // Select back camera as a default
-            CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-
-            try {
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll();
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                        this, cameraSelector, preview);
-
-            } catch(Exception e) {
-
-                Log.e(TAG, "Use case binding failed", e);
-            }
-
-        }, ContextCompat.getMainExecutor((MainActivity)getActivity()));
-        //檔案名稱與儲存路徑
-        File photoFile = new File(outputDirectory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.TAIWAN).format(System.currentTimeMillis()) + ".jpg");
-
-        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
-
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor((MainActivity)getActivity()),new ImageCapture.OnImageSavedCallback(){
-            @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                Log.d(TAG, "onImageSaved: " );
-                Uri savedUri = Uri.fromFile(photoFile);
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), savedUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //翻轉圖片
-                if (bitmap.getWidth() > bitmap.getHeight()) {
-                    Matrix matrix = new Matrix();
-                    matrix.setRotate(90f);
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                }
-
-                imageView.setImageBitmap(bitmap);
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setOnClickListener(view->{
-                    imageView.setVisibility(View.GONE);
-                });
-            }
-            @Override
-            public void onError(@NonNull ImageCaptureException exception) {
-                Log.e(TAG, "onError: " ,exception);
-
-            }
-
-        });
-    }*/
-
-    /*private void takePicture(ImageView imageView){
-        Log.d(TAG, "takePicture: " );
-
-        //ImageCapture imageCapture = new ImageCapture.Builder().build();
-
-        //檔案名稱與儲存路徑
-        File photoFile = new File(outputDirectory, new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.TAIWAN).format(System.currentTimeMillis()) + ".jpg");
-
-        ImageCapture.OutputFileOptions outputOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
-
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(getActivity()),new ImageCapture.OnImageSavedCallback(){
-            @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                Log.d(TAG, "onImageSaved: " );
-                Uri savedUri = Uri.fromFile(photoFile);
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), savedUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //翻轉圖片
-                if (bitmap.getWidth() > bitmap.getHeight()) {
-                    Matrix matrix = new Matrix();
-                    matrix.setRotate(90f);
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                }
-
-                imageView.setImageBitmap(bitmap);
-                imageView.setVisibility(View.VISIBLE);
-                imageView.setOnClickListener(view->{
-                    imageView.setVisibility(View.GONE);
-                });
-            }
-            @Override
-            public void onError(@NonNull ImageCaptureException exception) {
-                Log.e(TAG, "onError: " ,exception);
-
-            }
-
-        });
-
-    }*/
-
-
 

@@ -112,6 +112,7 @@ public class EatoutInputFragment extends Fragment {
 
                     }
                     textview.setText(text);
+                    break;
                 }
             }
         }, 300);

@@ -114,6 +114,7 @@ public class ManualInputFragment extends Fragment {
                         text+=mealData.foodlist.get(j)+"："+mealData.foodcallist.get(j)+"大卡\n";
                     }
                     textview.setText(text);
+                    break;
                 }
             }
         }, 300);
