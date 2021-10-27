@@ -232,7 +232,7 @@ public class EatoutInputFragment extends Fragment {
             dialog.dismiss();
             for(int j=0;j<foodname.size();j++){
                 if(foodname.get(j).equals(searchlist.get(which))){
-                    String cal=foodcal.get(j+1);
+                    String cal=foodcal.get(j);
                     text= (String) textview.getText();
                     text+=String.valueOf(searchlist.get(which))+"："+cal+"大卡\n";
                     mealData.foodlist.add(searchlist.get(which));
