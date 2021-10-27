@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mSignInClient;
     private FirebaseAuth mFirebaseAuth;
     private String foodCal;
-    private int IFseleceted;
+    private int IFseleceted,IFdate,IFtime;
     private ArrayList<MealData> mealData= new ArrayList<MealData>();
     // [START declare_database_ref]
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -312,7 +313,103 @@ public class MainActivity extends AppCompatActivity {
         IF.put("IFselected",IFseleceted);
         //DocumentReference docRef = db.collection("users").document("test1");
         db.collection("users").document("test1")
-                .set(IF)
+                .set(IF, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+    }
+
+    public int get_IFdate(){
+        DocumentReference docRef = db.collection("users").document("test1");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Map<String, Object> docMap=document.getData();
+                        Log.d(TAG, "Map data: " + docMap);
+                        try{
+                            IFdate=Integer.parseInt(String.valueOf(docMap.get("IFdate")));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                            IFdate=0;
+                        }
+                        Log.d(TAG, "IFdate: " + IFdate);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        IFdate=0;
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+        return IFdate;
+    }
+
+    public int get_IFtime(){
+        DocumentReference docRef = db.collection("users").document("test1");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Map<String, Object> docMap=document.getData();
+                        Log.d(TAG, "Map data: " + docMap);
+                        try{
+                            IFtime=Integer.parseInt(String.valueOf(docMap.get("IFtime")));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                            IFtime=0;
+                        }
+                        Log.d(TAG, "IFtime: " + IFtime);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        IFtime=0;
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+        return IFtime;
+    }
+
+    public void save_IFtime(int date,int time){
+        Map<String, Integer> IFdate = new HashMap<>();
+        Map<String, Integer> IFtime = new HashMap<>();
+        IFdate.put("IFdate",date);
+        IFtime.put("IFtime",time);
+        //DocumentReference docRef = db.collection("users").document("test1");
+        db.collection("users").document("test1")
+                .set(IFdate, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+        db.collection("users").document("test1")
+                .set(IFtime, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

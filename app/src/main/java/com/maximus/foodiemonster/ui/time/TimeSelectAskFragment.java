@@ -1,5 +1,7 @@
 package com.maximus.foodiemonster.ui.time;
 
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +51,7 @@ public class TimeSelectAskFragment extends Fragment {
         time_accept.setOnClickListener(view->{
             //Toast.makeText(view.getContext(), "testing", Toast.LENGTH_LONG).show();
             ((MainActivity) requireActivity()).save_IFselected(selected);
+            ((MainActivity) requireActivity()).save_IFtime(0,0);
             navCtrl.navigate(R.id.action_navigation_time_selcet_ask_to_navigation_time);
         });
         ImageView time_ignore=root.findViewById(R.id.time_ignore);
