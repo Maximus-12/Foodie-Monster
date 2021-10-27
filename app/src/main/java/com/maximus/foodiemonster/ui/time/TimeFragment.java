@@ -3,6 +3,7 @@ package com.maximus.foodiemonster.ui.time;
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
@@ -37,6 +39,7 @@ public class TimeFragment extends Fragment {
     int IFcount;
     //private ProfileViewModel profileViewModel;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +55,24 @@ public class TimeFragment extends Fragment {
         TextView IF_text=root.findViewById(R.id.IF_text);
         TextView time_text=root.findViewById(R.id.time_text);
         TextView cur_time=root.findViewById(R.id.current_time);
+
         cur_time.setText("目前時間\n"+new SimpleDateFormat("MM/dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+        Handler handler=new Handler();
+        Thread thread = new Thread(() -> {
+            try {
+                //while (!thread.isInterrupted()) {
+                while (true) {
+                    Thread.sleep(1000);
+                    handler.post(()->{
+                        cur_time.setText("目前時間\n"+new SimpleDateFormat("MM/dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+                    });
+                }
+            } catch (InterruptedException e) {
+            }
+        });
+
+        thread.start();
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             int tmp2=((MainActivity) requireActivity()).get_IFselected();
             tmp2=((MainActivity) requireActivity()).get_IFdate();
