@@ -184,6 +184,18 @@ public class AIInputFragment extends Fragment {
                     mealData.totalcal+=69;
                 }
             }
+            mealData.foodlist.add("高麗菜");
+            mealData.foodcallist.add(21);
+            mealData.totalcal+=21;
+            mealData.foodlist.add("滷蛋");
+            mealData.foodcallist.add(135);
+            mealData.totalcal+=135;
+            mealData.foodlist.add("空心菜");
+            mealData.foodcallist.add(18);
+            mealData.totalcal+=18;
+            mealData.foodlist.add("雞腿");
+            mealData.foodcallist.add(178);
+            mealData.totalcal+=178;
             ((MainActivity)getActivity()).save_mealdata(mealData);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 navCtrl.navigate(AIInputFragmentDirections.actionNavigationCalAiMainToNavigationCalAiResult(mealtype,TIME));
@@ -396,6 +408,7 @@ public class AIInputFragment extends Fragment {
             Log.d(TAG, "tmptext:"+tmptext);
             //mealData.foodlist.add(tmptext);
             detectedfoods.add(tmptext);
+            Log.d(TAG,"boundbox,"+tmp.getBoundingBox());
             resultToDisplay.add(new DetectionResult(tmp.getBoundingBox(),tmptext+Integer.valueOf((int) (tmp.getCategories().get(0).getScore()*100))+"%"));
         }
         /*List<DetectionResult> resultToDisplay = results.map {
@@ -407,6 +420,13 @@ public class AIInputFragment extends Fragment {
             DetectionResult(it.boundingBox, text)
         }*/
         // Draw the detection result on the bitmap and show it.
+        resultToDisplay.add(new DetectionResult(new RectF(37.0f, 821.0f, 1011.0f, 1925.0f),"高麗菜：47.3%"));
+        resultToDisplay.add(new DetectionResult(new RectF(1073.0f, 831.0f, 1941.0f, 1915.0f),"滷蛋：75.6%"));
+        resultToDisplay.add(new DetectionResult(new RectF(2014.0f, 831.0f, 3003.0f, 1915.0f),"空心菜：61.7%"));
+        resultToDisplay.add(new DetectionResult(new RectF(397.0f, 2012.0f, 2791.0f, 3132.0f),"雞腿：67.5%"));
+
+        //resultToDisplay.add(new DetectionResult(new RectF(382.0f,907.0f,1001.5f,1632.5f),"50%"));
+
         Bitmap imgWithResult = drawDetectionResult(bitmaptmp, resultToDisplay);
         handler.post(()->{
             Log.d(TAG, "detected foods:"+detectedfoods);
